@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Shared Services</string>
+
+    <string name="home">Home</string>
+    <string name="now">Book now</string>
+    <string name="advance">Book in advance</string>
+    <string name="reclamation">Reclamation</string>
+    <string name="profile">Profile</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="settings">Settings</string>
+
+    <string-array name="nav_drawer_labels">
+        <item>@string/home</item>
+        <item>@string/now</item>
+        <item>@string/advance</item>
+        <item>@string/reclamation</item>
+        <item>@string/profile</item>
+    </string-array>
+</resources>
