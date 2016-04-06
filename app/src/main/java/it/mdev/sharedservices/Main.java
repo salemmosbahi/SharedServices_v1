@@ -1,7 +1,9 @@
 package it.mdev.sharedservices;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,9 +11,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import it.mdev.sharedservices.activity.Car;
 import it.mdev.sharedservices.activity.Download;
@@ -19,6 +27,7 @@ import it.mdev.sharedservices.activity.Event;
 import it.mdev.sharedservices.activity.Home;
 import it.mdev.sharedservices.activity.Login;
 import it.mdev.sharedservices.activity.Paper;
+import it.mdev.sharedservices.activity.Profile;
 import it.mdev.sharedservices.activity.Settings;
 import it.mdev.sharedservices.design.FragmentDrawer;
 import it.mdev.sharedservices.util.Controllers;
@@ -43,6 +52,28 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
         displayView(0);
+        if(!pref.getString(conf.tag_token, "").equals("")){
+            RelativeLayout rl = (RelativeLayout) findViewById(R.id.nav_header_container);
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View vi = inflater.inflate(R.layout.toolnav_drawer, null);
+            TextView tv = (TextView) vi.findViewById(R.id.usernameTool_txt);
+            tv.setText(pref.getString(conf.tag_username, ""));
+            ImageView im = (ImageView) vi.findViewById(R.id.pictureTool_iv);
+            byte[] imageAsBytes = Base64.decode(pref.getString(conf.tag_picture, "").getBytes(), Base64.DEFAULT);
+            im.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
+            rl.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, new Profile());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle(getString(R.string.profile));
+
+                }
+            });
+            rl.addView(vi);
+        }
     }
 
     @Override

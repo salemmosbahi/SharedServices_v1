@@ -12,12 +12,14 @@ public class Controllers {
     public static final String res = "res";
     public static final String response = "response";
 
-    //public static final String url = "http://10.0.2.2:7007";
-    public static final String url = "http://192.168.1.2:7007";
-    public static final String url_login = url + "/login";
-    public static final String url_signup = url + "/signup";
+    //public static final String url = "http://10.0.2.2:4000";
+    public static final String url = "http://192.168.1.3:4000";
     public static final String url_getAllCountry = url + "/getAllCountry";
     public static final String url_getAllCity = url + "/getAllCity";
+    public static final String url_login = url + "/login";
+    public static final String url_signup = url + "/signup";
+    public static final String url_profile = url + "/profile";
+
 
     public static final String tag_key = "key";
     public static final String tag_token = "token";
