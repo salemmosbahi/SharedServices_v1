@@ -1,5 +1,7 @@
 package it.mdev.sharedservices;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,10 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import it.mdev.sharedservices.activity.Car;
+import it.mdev.sharedservices.activity.Download;
+import it.mdev.sharedservices.activity.Event;
+import it.mdev.sharedservices.activity.Home;
+import it.mdev.sharedservices.activity.Login;
+import it.mdev.sharedservices.activity.Paper;
 import it.mdev.sharedservices.activity.Settings;
 import it.mdev.sharedservices.design.FragmentDrawer;
+import it.mdev.sharedservices.util.Controllers;
 
 public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
+    private SharedPreferences pref;
+    Controllers conf = new Controllers();
 
     public Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
@@ -24,12 +35,14 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        pref = getSharedPreferences(conf.app, Context.MODE_PRIVATE);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         drawerFragment = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
+        displayView(0);
     }
 
     @Override
@@ -60,26 +73,26 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
-            /*case 0:
+            case 0:
                 fragment = new Home();
-                title = getString(R.string.home);
+                title = getString(R.string.app_name);
                 break;
             case 1:
-                fragment = new Book();
-                title = getString(R.string.now);
+                fragment = new Car();
+                title = getString(R.string.car);
                 break;
             case 2:
-                fragment = new BookAdvance();
-                title = getString(R.string.advance);
+                fragment = new Download();
+                title = getString(R.string.download);
                 break;
             case 3:
-                fragment = new Reclamation();
-                title = getString(R.string.reclamation);
+                fragment = new Event();
+                title = getString(R.string.event);
                 break;
             case 4:
-                fragment = new Profile();
-                title = getString(R.string.profile);
-                break;*/
+                fragment = new Paper();
+                title = getString(R.string.paper);
+                break;
             case 5:
                 fragment = new Settings();
                 title = getString(R.string.settings);
@@ -89,12 +102,30 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-            getSupportActionBar().setTitle(title);
+            if( pref.getString(conf.tag_token, "").equals("")) {
+                if (title.equals(getString(R.string.app_name)) || title.equals(getString(R.string.about))) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, fragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle(title);
+                } else {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, new Login());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    getSupportActionBar().setTitle(getString(R.string.login));
+                }
+            } else {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                getSupportActionBar().setTitle(title);
+            }
         }
     }
 }
